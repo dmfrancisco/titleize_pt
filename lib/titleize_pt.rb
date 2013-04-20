@@ -20,14 +20,13 @@ module TitleizePT
     pt: %w{ a as da das de do dos e em na nas no nos o os para por sobre um uns uma umas }
   }
 
-  def self.titleize_pt(title)
-    titleize_locale(title, :pt)
+  def titleize_pt
+    titleize_locale :pt
   end
 
-  def self.titleize_locale(title, locale = nil)
-    locale = (WORDS.key?(I18n.locale) ? I18n.locale : :pt) if locale.blank?
-
-    title = title.mb_chars
+  def titleize_locale(locale = I18n.locale)
+    locale = :pt unless WORDS.key? locale # Fallback to PT if locale is not supported
+    title = mb_chars # This proxies string methods in an encoding safe manner
 
     # If the title is all-uppercase, assume it needs to be fixed and downcase it entirely
     title.downcase! unless title[/[[:lower:]]/]
@@ -42,32 +41,11 @@ module TitleizePT
       end
     end.join($1)
   end
-end
-
-class String
-  def titleize_pt
-    TitleizePT.titleize_pt(self)
-  end
-
-  def titleize_locale(locale = nil)
-    TitleizePT.titleize_locale(self, locale)
-  end
 
   alias_method :titlecase_pt, :titleize_pt
   alias_method :titlecase_locale, :titleize_locale
 end
 
-module ActiveSupport::Multibyte
-  class Chars
-    def titleize_pt
-      chars TitleizePT.titleize_pt(self)
-    end
-
-    def titleize_locale(locale = nil)
-      chars TitleizePT.titleize_locale(self, locale)
-    end
-
-    alias_method :titlecase_pt, :titleize_pt
-    alias_method :titlecase_locale, :titleize_locale
-  end
+class String
+  include TitleizePT
 end
