@@ -27,7 +27,7 @@ The [`titleize`](https://github.com/granth/titleize) gem does some extra work to
 "a lovely and talented title".titleize # => "A Lovely and Talented Title"
 ```
 
-This gem is not nearly as advanced as the `titleize` gem but knows how to deal with characters and handles titles in Portuguese:
+This gem is not nearly as advanced as the `titleize` gem but knows how to deal with unicode characters and titles in Portuguese:
 
 ```ruby
 "GUIA DE SOBREVIVÊNCIA".titleize_pt # => "Guia de Sobrevivência"
