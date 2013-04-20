@@ -27,32 +27,30 @@ module TitleizePT
   def self.titleize_locale(title, locale = nil)
     locale = (WORDS.key?(I18n.locale) ? I18n.locale : :pt) if locale.blank?
 
-    if title[/[[:lower:]]/]
-      # Similar to the existent `titleize` method from ActiveSupport but respect acronyms
-      title = title.split.map { |w| /^\p{Upper}*$/.match(w) ? w : w.downcase }.join(' ')
-    else
-      title.downcase! # If the entire title is all-uppercase, assume it needs to be fixed
-    end
+    title = title.mb_chars
 
-    title = title.to_s.gsub(/\b('?[\S])/u) { ActiveSupport::Multibyte::Unicode.apply_mapping $1, :uppercase_mapping }
-    words = title.split
-    first = words.shift
+    # If the title is all-uppercase, assume it needs to be fixed and downcase it entirely
+    title.downcase! unless title[/[[:lower:]]/]
 
-    if words.empty?
-      first # The first word should always be capitalized
-    else
-      first +" "+ words.map { |w| WORDS[locale].include?(w.downcase) ? w.downcase : w }.join(' ')
-    end
+    title.split(/(\b)/).each_with_index.map do |word, index|
+      if word =~ /^\p{Upper}{2,}$/ # Respect acronyms
+        word
+      elsif WORDS[locale].include? word.downcase and not index.zero?
+        word.downcase!
+      else
+        word.capitalize!
+      end
+    end.join($1)
   end
 end
 
 class String
   def titleize_pt
-    TitleizePT.titleize_pt(self.mb_chars)
+    TitleizePT.titleize_pt(self)
   end
 
   def titleize_locale(locale = nil)
-    TitleizePT.titleize_locale(self.mb_chars, locale)
+    TitleizePT.titleize_locale(self, locale)
   end
 
   alias_method :titlecase_pt, :titleize_pt

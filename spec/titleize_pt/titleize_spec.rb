@@ -67,4 +67,14 @@ describe "TitleizePT module" do
   it "should leave all-uppercase words untouched" do
     "um pedido HTTP".titleize_pt.must_equal "Um Pedido HTTP"
   end
+
+  it "should not modify its receiver" do
+    title = "olá, mundo"
+    title.titleize_pt.must_equal "Olá, Mundo"
+    title.must_equal "olá, mundo"
+
+    title = "OLÁ, MUNDO"
+    title.titleize_pt.must_equal "Olá, Mundo"
+    title.must_equal "OLÁ, MUNDO"
+  end
 end
