@@ -17,7 +17,8 @@ module TitleizePT
     # Portuguese words that should not be capitalized. To improve the list, the
     # "Acordo Ortográfico de 1945" document may be a good resource.
     # Wikipedia also has guidelines on this: http://goo.gl/28T0h
-    pt: %w{ a as ao aos da das de do dos e em entre na nas no nos o os para por sobre um uns uma umas }
+    pt: %w{ a as à às ao aos da das de do dos e em entre na nas no nos o os ou para
+            por sobre um uns uma umas }
   }
 
   def titleize_pt
